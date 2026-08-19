@@ -770,7 +770,12 @@ static int sdhci_brcmstb_resume(struct device *dev)
 	struct sdhci_host *host = dev_get_drvdata(dev);
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
 	struct sdhci_brcmstb_priv *priv = sdhci_pltfm_priv(pltfm_host);
+	const struct brcmstb_match_priv *match_priv =
+		of_device_get_match_data(dev);
 	int ret;
+
+	if (match_priv && match_priv->cfginit)
+		match_priv->cfginit(host);
 
 	ret = sdhci_pltfm_resume(dev);
 	if (!ret && priv->base_freq_hz) {
